@@ -1,0 +1,7 @@
+.git
+.env
+*.py[a-z]
+__pycache__
+.vscode/
+db/
+var/*
