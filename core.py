@@ -11,7 +11,7 @@ load_dotenv()
 host = environ.get("HOST")
 location = environ.get("LOCATION")
 total, used, free, usage_percentage = Collector().fetch_disk_usage(host)
-log_file = "./var/logs/notifier.log"
+log_file = environ.get("LOG_PATH")
 
 
 def monitoring_reporter():
