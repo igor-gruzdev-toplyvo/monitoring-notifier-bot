@@ -10,7 +10,6 @@ load_dotenv()
 
 host = environ.get("HOST")
 location = environ.get("LOCATION")
-total, used, free, usage_percentage = Collector().fetch_disk_usage(host)
 log_file = environ.get("LOG_PATH")
 
 
@@ -47,6 +46,8 @@ def monitoring_reporter():
             )
 
     while True:
+        total, used, free, usage_percentage = Collector().fetch_disk_usage(host)
+
         if all(item >= 90 for item in Executor().select_period()) and not alert_status:
             alert_status = True
             message = """
@@ -85,8 +86,6 @@ def monitoring_reporter():
             sleep(60)
 
         else:
-            Executor().write_entry(host, usage_percentage)
-            __filelist_generator()
             sleep(60)
 
         continue
