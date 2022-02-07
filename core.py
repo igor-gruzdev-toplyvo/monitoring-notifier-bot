@@ -21,7 +21,7 @@ def monitoring_reporter():
     def __filelist_generator():
         file_list = []
 
-        for file in Collector().fetch_large_files(location, 5):
+        for file in Collector().fetch_large_files(location, 2):
             file_list.append(file)
 
         return file_list
