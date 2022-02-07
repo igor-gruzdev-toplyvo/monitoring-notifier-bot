@@ -31,7 +31,7 @@ def monitoring_reporter():
         current_time = datetime.time(datetime.now()).strftime("%H:%M:%S")
 
         log = open(log_file, "a")
-        log.write(f"[{current_date} {current_time}] {message}")
+        log.write("[{} {}] {}".format(current_date, current_time, message))
         log.close()
 
     def __parse_list():
@@ -42,37 +42,44 @@ def monitoring_reporter():
             Notifier().send_notification(telegram_message)
             __write_log("Message was sent\n")
         except Exception as exc:
-            __write_log(f"Something went wrong during message delivery: {str(exc)}\n")
+            __write_log(
+                "Something went wrong during message delivery: {}\n".format(str(exc))
+            )
 
     while True:
-        if all(item >= 90 for item in Executor().select_period()) and not alert_status:
+        if all(item >= 10 for item in Executor().select_period()) and not alert_status:
             alert_status = True
-            telegram_message = (
-                f"*{host}* disk usage is CRITICAL: *{usage_percentage}%*"
-                f"```\n\n"
-                f"Total | {total}\n"
-                f"Used  | {used}\n"
-                f"Free  | {free}\n\n"
-                f"```"
-                f"List of largest files in *{location}:*"
-                f"```\n\n"
-                f"{__parse_list()}"
-                f"```"
+            message = """
+                *{}* disk usage is CRITICAL: *{}%*\n
+                ```
+                Total | {}
+                Used  | {}
+                Free  | {}
+                ```
+                List of largest files in *{}:*\n
+                ```
+                {}
+                ```
+                """.format(
+                host, usage_percentage, total, used, free, location, __parse_list()
             )
+            telegram_message = "\n".join([m.lstrip() for m in message.split("\n")])
 
             __send_notification()
             sleep(60)
 
         elif alert_status and Executor().select_period()[-1] < 90:
             alert_status = False
-            telegram_message = (
-                f"*{host}* disk usage was RESOLVED: *{usage_percentage}%*"
-                f"```\n\n"
-                f"Total | {total}\n"
-                f"Used  | {used}\n"
-                f"Free  | {free}\n\n"
-                f"```"
+            message = """
+                *{}* disk usage was RESOLVED: *{}%*\n
+                ```
+                Total | {}
+                Used  | {}
+                Free  | {}
+                ```""".format(
+                host, usage_percentage, total, used, free
             )
+            telegram_message = "\n".join([m.lstrip() for m in message.split("\n")])
 
             __send_notification()
             sleep(60)

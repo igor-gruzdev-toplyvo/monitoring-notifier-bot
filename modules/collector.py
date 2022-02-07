@@ -25,7 +25,7 @@ class Collector:
             for filename in filenames:
                 try:
                     size_bytes = os.path.getsize(os.path.join(folder, filename))
-                    size_text = f"{folder}{filename} -> {size(size_bytes)}"
+                    size_text = "{}{} -> {}".format(folder,filename, size(size_bytes))
                     if filesize * 1024 * 1024 ** 2 <= size_bytes:
                         yield size_text
                 except FileNotFoundError:

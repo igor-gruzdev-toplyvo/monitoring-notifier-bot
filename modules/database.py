@@ -46,13 +46,13 @@ class Executor:
 
     def write_entry(self, hostname, usage_percentage):
         self.cursor.execute(
-            f"""INSERT INTO monitoring (
+            """INSERT INTO monitoring (
                     hostname, usage_percentage, date, time
                 )
                 VALUES (
-                    '{hostname}', {usage_percentage}, '{self.current_date}', '{self.current_time}'
+                    '{}', {}, '{}', '{}'
                 )
-            """
+            """.format(hostname, usage_percentage, self.current_date, self.current_time)
         )
         self.connector.commit()
         self.connector.close()
