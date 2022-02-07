@@ -47,7 +47,7 @@ def monitoring_reporter():
             )
 
     while True:
-        if all(item >= 10 for item in Executor().select_period()) and not alert_status:
+        if all(item >= 90 for item in Executor().select_period()) and not alert_status:
             alert_status = True
             message = """
                 *{}* disk usage is CRITICAL: *{}%*\n
